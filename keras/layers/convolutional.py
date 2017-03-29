@@ -802,7 +802,7 @@ class Conv2DTranspose(Conv2D):
         config.pop('dilation_rate')
         return config
 
-class Conv2dDeform(Layer):
+class DeformConv2D(Layer):
     """Abstract nD convolution layer (private, used as implementation base).
 
     This layer creates a convolution kernel that is convolved
@@ -876,7 +876,7 @@ class Conv2dDeform(Layer):
                  kernel_constraint=None,
                  bias_constraint=None,
                  **kwargs):
-        #super(_Conv, self).__init__(**kwargs)
+        super(DeformConv2D, self).__init__(**kwargs)
         rank = 2 #change for more in the future?
         self.rank = rank
         self.filters = filters
@@ -914,8 +914,8 @@ class Conv2dDeform(Layer):
                                       constraint=self.kernel_constraint)
 
         self.offset_kernel = self.add_weight(kernel_shape,
-                                      initializer=self.kernel_initializer,
-                                      name='kernel',
+                                      initializer='Ones',
+                                      name='offset_kernel',
                                       regularizer=self.kernel_regularizer,
                                       constraint=self.kernel_constraint)
 
@@ -1015,8 +1015,8 @@ class Conv2dDeform(Layer):
             'kernel_constraint': constraints.serialize(self.kernel_constraint),
             'bias_constraint': constraints.serialize(self.bias_constraint)
         }
-        # base_config = super(_Conv, self).get_config()
-        return dict(list(config.items()))
+        base_config = super(DeformConv2D, self).get_config()
+        return dict(list(base_config.items()) + list(config.items()))
 
 class SeparableConv2D(Conv2D):
     """Depthwise separable 2D convolution.
