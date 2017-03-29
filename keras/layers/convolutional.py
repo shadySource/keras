@@ -914,7 +914,7 @@ class DeformConv2D(Layer):
                                       constraint=self.kernel_constraint)
 
         self.offset_kernel = self.add_weight(kernel_shape,
-                                      initializer='Ones',
+                                      initializer='Zeros',
                                       name='offset_kernel',
                                       regularizer=self.kernel_regularizer,
                                       constraint=self.kernel_constraint)
